@@ -7,12 +7,12 @@ import (
 )
 
 type Queue struct {
-	dropped atomic.Uint32
-	added atomic.Uint32
-	workers  int
-	queue    *chan model.Span
-	stop     chan bool
-	waiter   sync.WaitGroup
+	Dropped atomic.Uint32
+	Added   atomic.Uint32
+	workers int
+	queue   *chan model.Span
+	stop    chan bool
+	waiter  sync.WaitGroup
 }
 
 func NewQueue(numWorkers int, capacity int) *Queue{
@@ -32,17 +32,12 @@ func (q *Queue) Start(writeFunction func(span model.Span) error) {
 		go func() {
 			startWg.Done()
 			defer q.waiter.Done()
-			for {
-				select {
-				case span := <-*q.queue:
-					err := writeFunction(span)
-					if err != nil {
-						q.dropped.Add(1)
-					} else {
-						q.added.Add(1)
-					}
-				case _ = <-q.stop:
-					return
+			for span := range *q.queue {
+				err := writeFunction(span)
+				if err != nil {
+					q.Dropped.Inc()
+				} else {
+					q.Added.Inc()
 				}
 			}
 		}()
@@ -51,9 +46,10 @@ func (q *Queue) Start(writeFunction func(span model.Span) error) {
 }
 
 func (q *Queue) Stop() {
-	close(q.stop)
+	close(*q.queue)
 	q.waiter.Wait()
 }
+
 
 func (q *Queue) Enqueue(span model.Span) {
 	*q.queue <- span

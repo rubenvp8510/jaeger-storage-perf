@@ -29,7 +29,7 @@ func (g *SpanGenerator) generateSpan(traceID model.TraceID, traceStartTime, trac
 		TraceID:       traceID,
 		SpanID:        model.SpanID(rand.Int63()),
 		OperationName: opNames[0],
-		Tags:          generateTags(0, 100),
+		Tags:          generateTags(0, 25),
 		Process:       processes[rand.Intn(len(processes))],
 		StartTime:     time.Unix(startTime, 0),
 		Duration:      time.Duration(duration) * time.Second,

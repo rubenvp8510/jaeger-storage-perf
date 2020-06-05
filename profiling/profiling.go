@@ -12,11 +12,8 @@ type Profiler struct {
 	outPath     string
 	samplesFile string
 	cleanup     bool
-	numMetrics  int
 	cpuprof     *os.File
 	memprof     *os.File
-	blockprof   *os.File
-	mtxprof     *os.File
 }
 
 func (b *Profiler) StartProfiling() error {
@@ -38,18 +35,6 @@ func (b *Profiler) StartProfiling() error {
 	}
 	runtime.MemProfileRate = 64 * 1024
 
-	// Start fatal profiling.
-	b.blockprof, err = os.Create(filepath.Join(b.outPath, "block.prof"))
-	if err != nil {
-		return fmt.Errorf("bench: could not create block profile: %v", err)
-	}
-	runtime.SetBlockProfileRate(20)
-
-	b.mtxprof, err = os.Create(filepath.Join(b.outPath, "mutex.prof"))
-	if err != nil {
-		return fmt.Errorf("bench: could not create mutex profile: %v", err)
-	}
-	runtime.SetMutexProfileFraction(20)
 	return nil
 }
 
@@ -65,22 +50,6 @@ func (b *Profiler) StopProfiling() error {
 		}
 		b.memprof.Close()
 		b.memprof = nil
-	}
-	if b.blockprof != nil {
-		if err := pprof.Lookup("block").WriteTo(b.blockprof, 0); err != nil {
-			return fmt.Errorf("error writing block profile: %v", err)
-		}
-		b.blockprof.Close()
-		b.blockprof = nil
-		runtime.SetBlockProfileRate(0)
-	}
-	if b.mtxprof != nil {
-		if err := pprof.Lookup("mutex").WriteTo(b.mtxprof, 0); err != nil {
-			return fmt.Errorf("error writing mutex profile: %v", err)
-		}
-		b.mtxprof.Close()
-		b.mtxprof = nil
-		runtime.SetMutexProfileFraction(0)
 	}
 	return nil
 }
