@@ -47,7 +47,7 @@ func (t *TagTemplate) Tag() model.KeyValue {
 
 func generateTagTemplates(max int, words[]string) []*TagTemplate {
 	tags := make([]*TagTemplate, max)
-	keys := generateRandStrings(data.Tags, max)
+	keys := generateRandStrings(data.Tags,tagSeparator, max)
 	ntypes := len(tagTypes) - 1
 	for i := 0; i < len(tags); i++ {
 		t := rand.Intn(ntypes)

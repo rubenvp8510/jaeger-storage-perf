@@ -7,6 +7,8 @@ import (
 	"github.com/ruben.vp8510/jaeger-storage-perf/generator/data"
 )
 
+const wordSeparator = "_"
+
 func generateTraceID() model.TraceID {
 	id := uuid.New()
 	traceID := model.TraceID{}
@@ -29,11 +31,11 @@ func generateProcesses(num int, minTags int, template []*TagTemplate) []Process 
 }
 
 func generateWords(max int) []string  {
-	return generateRandStrings(data.Words, max)
+	return generateRandStrings(data.Words,wordSeparator, max)
 }
 
 
-func generateRandStrings(pool []string, max int) []string {
+func generateRandStrings(pool []string, separator string, max int) []string {
 	size := len(pool)
 	tagKeys := make([]string, max)
 	count := 0
@@ -47,7 +49,7 @@ func generateRandStrings(pool []string, max int) []string {
 		for i := 0; i < m; i++ {
 			prefix := tagKeys[i]
 			for k := 0; k < size; k++ {
-				key := prefix + tagSeparator + pool[k]
+				key := prefix + separator + pool[k]
 				count++
 				if count >= max {
 					return tagKeys
