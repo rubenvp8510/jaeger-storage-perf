@@ -4,59 +4,56 @@ import (
 	"encoding/binary"
 	"github.com/google/uuid"
 	"github.com/jaegertracing/jaeger/model"
-	"github.com/sethvargo/go-diceware/diceware"
-	"math/rand"
+	"github.com/ruben.vp8510/jaeger-storage-perf/generator/data"
 )
-
-var tagTypes = []model.ValueType{
-	model.ValueType_INT64,
-	model.ValueType_STRING,
-	model.ValueType_BINARY,
-	model.ValueType_BOOL,
-	model.ValueType_FLOAT64,
-}
-
-func generateTags(minCardinality, maxCardinality int) []model.KeyValue {
-	tagCard := rand.Intn(maxCardinality-minCardinality) + minCardinality
-	tags := make([]model.KeyValue, tagCard)
-
-	keys, _ := diceware.Generate(tagCard)
-	for i, key := range keys {
-		tags[i].Key = key
-		valueType := tagTypes[rand.Intn(len(tagTypes))]
-		switch valueType {
-		case model.ValueType_INT64:
-			tags[i].VInt64 = rand.Int63n(10000)
-		case model.ValueType_FLOAT64:
-			tags[i].VFloat64 = rand.Float64() * 10000
-		case model.ValueType_BOOL:
-			if rand.Intn(2) == 0 {
-				tags[i].VBool = false
-			} else {
-				tags[i].VBool = true
-			}
-		case model.ValueType_STRING:
-			v, _ := diceware.Generate(1)
-			tags[i].VStr = v[0]
-		}
-	}
-	return tags
-}
 
 func generateTraceID() model.TraceID {
 	id := uuid.New()
-	high := binary.LittleEndian.Uint64(id[0:8])
-	low := binary.LittleEndian.Uint64(id[8:16])
-	return model.TraceID{Low: low, High: high}
+	traceID := model.TraceID{}
+	traceID.High = binary.BigEndian.Uint64(id[:8])
+	traceID.Low = binary.BigEndian.Uint64(id[8:])
+	return traceID
 }
 
-func generateRandomProcesses(num int) []*model.Process {
-	processes := make([]*model.Process, num)
-	names, _ := diceware.Generate(num)
+func generateProcesses(num int, minTags int, template []*TagTemplate) []Process {
+	processes := make([]Process, num)
+	names := generateWords(num)
 	for i, srvName := range names {
-		processes[i] = &model.Process{
+		processes[i].Process = &model.Process{
 			ServiceName: srvName,
+			Tags:generateTagsFromPool(template,minTags),
 		}
+		processes[i].Id = uuid.New().String()
 	}
 	return processes
+}
+
+func generateWords(max int) []string  {
+	return generateRandStrings(data.Words, max)
+}
+
+
+func generateRandStrings(pool []string, max int) []string {
+	size := len(pool)
+	tagKeys := make([]string, max)
+	count := 0
+
+	for i := 0; i < size && count < max; i, count = i+1, count+1 {
+		tagKeys[count] = pool[i]
+	}
+
+	for {
+		m := count
+		for i := 0; i < m; i++ {
+			prefix := tagKeys[i]
+			for k := 0; k < size; k++ {
+				key := prefix + tagSeparator + pool[k]
+				count++
+				if count >= max {
+					return tagKeys
+				}
+				tagKeys[count] = key
+			}
+		}
+	}
 }
