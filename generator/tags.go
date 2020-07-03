@@ -2,7 +2,7 @@ package generator
 
 import (
 	"github.com/jaegertracing/jaeger/model"
-	"github.com/ruben.vp8510/jaeger-storage-perf/generator/data"
+	"github.com/rubenvp8510/jaeger-storage-perf/generator/data"
 	"math"
 	"math/rand"
 )
@@ -22,8 +22,8 @@ type Process struct {
 }
 
 type TagTemplate struct {
-	Key  string
-	Type model.ValueType
+	Key   string
+	Type  model.ValueType
 	words []string
 }
 
@@ -40,21 +40,21 @@ func (t *TagTemplate) Tag() model.KeyValue {
 	case model.ValueType_BOOL:
 		tag.VBool = rand.Intn(2) == 0
 	case model.ValueType_STRING:
-		tag.VStr = t.words[rand.Intn(len(t.words) - 1)]
+		tag.VStr = t.words[rand.Intn(len(t.words)-1)]
 	}
 	return tag
 }
 
-func generateTagTemplates(max int, words[]string) []*TagTemplate {
+func generateTagTemplates(max int, words []string) []*TagTemplate {
 	tags := make([]*TagTemplate, max)
-	keys := generateRandStrings(data.Tags,tagSeparator, max)
+	keys := generateRandStrings(data.Tags, tagSeparator, max)
 	ntypes := len(tagTypes) - 1
 	for i := 0; i < len(tags); i++ {
 		t := rand.Intn(ntypes)
 		tags[i] = &TagTemplate{
-			Key:  keys[i],
-			Type: tagTypes[t],
-			words:words,
+			Key:   keys[i],
+			Type:  tagTypes[t],
+			words: words,
 		}
 	}
 

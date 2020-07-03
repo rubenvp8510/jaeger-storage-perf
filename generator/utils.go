@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"github.com/google/uuid"
 	"github.com/jaegertracing/jaeger/model"
-	"github.com/ruben.vp8510/jaeger-storage-perf/generator/data"
+	"github.com/rubenvp8510/jaeger-storage-perf/generator/data"
 )
 
 const wordSeparator = "_"

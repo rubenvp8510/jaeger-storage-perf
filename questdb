@@ -1,0 +1,17 @@
+Loading fixtures..
+Fixtures loaded..
+goos: linux
+goarch: amd64
+pkg: github.com/rubenvp8510/jaeger-storage-perf
+BenchmarkStorage/questdb-write-8         	   18117	     78017 ns/op
+BenchmarkStorage/questdb-write-8         	   15555	     77020 ns/op
+BenchmarkStorage/questdb-write-8         	   16323	     85741 ns/op
+BenchmarkStorage/questdb-write-8         	   15165	     70386 ns/op
+BenchmarkStorage/questdb-write-8         	   15544	     70826 ns/op
+BenchmarkStorage/questdb-read-8          	      39	  34697338 ns/op
+BenchmarkStorage/questdb-read-8          	      52	  28684841 ns/op
+BenchmarkStorage/questdb-read-8          	      38	  29164614 ns/op
+BenchmarkStorage/questdb-read-8          	      45	  31917478 ns/op
+BenchmarkStorage/questdb-read-8          	     100	  32473772 ns/op
+PASS
+ok  	github.com/rubenvp8510/jaeger-storage-perf	43.464s

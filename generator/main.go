@@ -29,6 +29,7 @@ func NewSpanGenerator() *TraceGenerator {
 	}
 }
 
+
 func (g *TraceGenerator) Init() {
 	rand.Seed(time.Now().Unix())
 	words := generateWords(20000)
@@ -106,7 +107,7 @@ func (g *TraceGenerator) setRelations(traceID model.TraceID, spans []*model.Span
 	}
 }
 
-func (g *TraceGenerator) Generate(minSpans, maxSpans int) []model.Span {
+func (g *TraceGenerator) Generate(minSpans, maxSpans int) []*model.Span {
 	numSpans := rand.Intn(maxSpans-minSpans) + minSpans
 	traceID := generateTraceID()
 	duration := rand.Int63n(int64(g.MaxDuration.Seconds() - g.MinDuration.Seconds())) + int64(g.MinDuration.Seconds())
@@ -117,9 +118,9 @@ func (g *TraceGenerator) Generate(minSpans, maxSpans int) []model.Span {
 		spans = append(spans, span)
 	}
 	g.setRelations(traceID, spans, 5)
-	result := make([]model.Span, numSpans)
+	result := make([]*model.Span, numSpans)
 	for i, s := range spans {
-		result[i] = *s
+		result[i] = s
 	}
 	return result
 }

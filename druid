@@ -1,0 +1,17 @@
+Loading fixtures..
+Fixtures loaded..
+goos: linux
+goarch: amd64
+pkg: github.com/rubenvp8510/jaeger-storage-perf
+BenchmarkStorage/druid-write-8         	   12759	    116109 ns/op
+BenchmarkStorage/druid-write-8         	   10000	    107998 ns/op
+BenchmarkStorage/druid-write-8         	   12872	     91955 ns/op
+BenchmarkStorage/druid-write-8         	   10000	    104810 ns/op
+BenchmarkStorage/druid-write-8         	   10000	    118494 ns/op
+BenchmarkStorage/druid-read-8          	       1	34982779385 ns/op
+BenchmarkStorage/druid-read-8          	       1	30949574093 ns/op
+BenchmarkStorage/druid-read-8          	       1	31012588586 ns/op
+BenchmarkStorage/druid-read-8          	       1	33977415511 ns/op
+BenchmarkStorage/druid-read-8          	       1	30096529036 ns/op
+PASS
+ok  	github.com/rubenvp8510/jaeger-storage-perf	186.249s

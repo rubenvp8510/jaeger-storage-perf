@@ -1,28 +1,58 @@
 package main
 
 import (
+	"flag"
+	"github.com/jaegertracing/jaeger/pkg/config"
 	"github.com/jaegertracing/jaeger/plugin/storage/badger"
-	"github.com/ruben.vp8510/jaeger-storage-perf/generator"
-	"github.com/uber/jaeger-lib/metrics"
-	"go.uber.org/zap"
+	"github.com/jaegertracing/jaeger/storage"
+	"github.com/rubenvp8510/jaeger-storage-perf/helpers"
+	"github.com/rubenvp8510/jaeger-storages/druid"
+	"github.com/rubenvp8510/jaeger-storages/questbd"
+	"github.com/rubenvp8510/redbull/pkg/redbull"
+	"github.com/spf13/viper"
+	"os"
 	"testing"
 )
 
+var storageType = flag.String("storage-type", "druid", "storage-type")
 
+var factories map[string]helpers.SetupFunction
 
-func BenchmarkBadgerStorage(b *testing.B) {
-	b.StopTimer()
-	factory := badger.NewFactory()
-	err := factory.Initialize(metrics.NullFactory, zap.NewNop())
-	if err != nil {
-		panic(err)
+func BenchmarkStorage(t *testing.B) {
+	stype := *storageType
+	factory, ok := factories[stype]
+	if !ok {
+		panic("Cannot construct factory of type " + stype)
 	}
-	spanWriter, _ := factory.CreateSpanWriter()
-	gen := generator.NewSpanGenerator()
-	spanList := gen.Generate(b.N+1)
-	b.StartTimer()
-	for i:= 0; i < b.N ; i++ {
-		spanWriter.WriteSpan(&spanList[i])
+	helpers.StorageBenchmark(stype, factory(), t)
+}
+
+func TestMain(m *testing.M) {
+	factories = map[string]helpers.SetupFunction{
+		"badger": func() storage.Factory {
+			factory := badger.NewFactory()
+			opts := badger.NewOptions("badger")
+			v, _ := config.Viperize(opts.AddFlags)
+			factory.InitFromViper(v)
+			return factory
+		},
+		"redbull": func() storage.Factory {
+			factory := redbull.NewFactory()
+			vip := viper.New()
+			vip.Set("redbull.sybil-path", "/home/rvargasp/go/bin/sybil")
+			factory.InitFromViper(vip)
+			return factory
+		},
+		"questdb": func() storage.Factory {
+			return questbd.NewFactory()
+		},
+		"druid": func() storage.Factory {
+			factory := druid.NewFactory()
+			factory.InitFromOptions(druid.DefaultOptions())
+			return factory
+		},
 	}
-	b.StopTimer()
+	helpers.Setup("traces_fixtures")
+	code := m.Run()
+	os.Exit(code)
 }

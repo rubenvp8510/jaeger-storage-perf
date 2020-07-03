@@ -1,0 +1,17 @@
+Loading fixtures..
+Fixtures loaded..
+goos: linux
+goarch: amd64
+pkg: github.com/rubenvp8510/jaeger-storage-perf
+BenchmarkStorage/redbull-write-8         	   10000	    161908 ns/op
+BenchmarkStorage/redbull-write-8         	    8384	    165576 ns/op
+BenchmarkStorage/redbull-write-8         	    8086	    197602 ns/op
+BenchmarkStorage/redbull-write-8         	   10000	    203287 ns/op
+BenchmarkStorage/redbull-write-8         	   10000	    186674 ns/op
+BenchmarkStorage/redbull-read-8          	       1	3021127059 ns/op
+BenchmarkStorage/redbull-read-8          	       1	1019790304 ns/op
+BenchmarkStorage/redbull-read-8          	      22	  69382589 ns/op
+BenchmarkStorage/redbull-read-8          	      20	  69519416 ns/op
+BenchmarkStorage/redbull-read-8          	      25	  72035149 ns/op
+PASS
+ok  	github.com/rubenvp8510/jaeger-storage-perf	37.514s

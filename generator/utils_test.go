@@ -1,7 +1,7 @@
 package generator
 
 import (
-	"github.com/ruben.vp8510/jaeger-storage-perf/generator/data"
+	"github.com/rubenvp8510/jaeger-storage-perf/generator/data"
 	"testing"
 )
 
