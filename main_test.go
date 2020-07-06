@@ -14,7 +14,7 @@ import (
 	"testing"
 )
 
-var storageType = flag.String("storage-type", "druid", "storage-type")
+var storageType = flag.String("storage-type", "badger", "storage-type")
 
 var factories map[string]helpers.SetupFunction
 
