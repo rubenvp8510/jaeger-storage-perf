@@ -28,10 +28,10 @@ func NewTest(name string) Test {
 	}
 }
 
-func (t *Test) Init() error {
+func (t *Test) Init(fixturesPath string) error {
 	println("Loading spans")
 	loader := fixtures.NewLoader()
-	spans, err := loader.LoadSpans("data/traces")
+	spans, err := loader.LoadSpans(fixturesPath)
 	if err != nil {
 		panic(err)
 	}
