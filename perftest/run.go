@@ -26,9 +26,9 @@ func runRead(preloadN int, test StorageTest, b *testing.B) error {
 	return closeFactory(test)
 }
 
-func RunRead(t *testing.B, factories map[string]storage.Factory) {
+func RunRead(t *testing.B, fixturesPath string, factories map[string]storage.Factory) {
 	test := tests.NewTest(t.Name())
-	err := test.Init("data/traces")
+	err := test.Init(fixturesPath)
 	assert.NoError(t, err)
 	for storageType, factory := range factories {
 		err := test.SetFactory(factory)
@@ -43,9 +43,9 @@ func RunRead(t *testing.B, factories map[string]storage.Factory) {
 	}
 }
 
-func RunWrite(t *testing.B, factories map[string]storage.Factory) {
+func RunWrite(t *testing.B, fixturesPath string, factories map[string]storage.Factory) {
 	test := tests.NewTest(t.Name())
-	err := test.Init("data/traces")
+	err := test.Init(fixturesPath)
 	assert.NoError(t, err)
 	for storageType, factory := range factories {
 		err := test.SetFactory(factory)
