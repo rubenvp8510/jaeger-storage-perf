@@ -9,7 +9,7 @@ import (
 
 type StorageTest interface {
 	Name() string
-	Init() error
+	Init(fixturesPath string) error
 	InitRead() error
 	InitWrite() error
 	SetFactory(f storage.Factory) error
