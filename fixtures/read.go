@@ -18,11 +18,14 @@ func NewLoader() *Loader {
 }
 
 func (l *Loader) LoadSpans(filename string) ([]model.Span, error) {
-	file, _ := os.OpenFile(filename, os.O_RDONLY, 0644)
+	file, err := os.OpenFile(filename, os.O_RDONLY, 0644)
+	if err != nil {
+		return nil, err
+	}
 	reader := bufio.NewReaderSize(file, BufferSize)
 	dec := gob.NewDecoder(reader) // Will read from network.
 	spans := make([]model.Span, 0, 10)
-	err := dec.Decode(&spans)
+	err = dec.Decode(&spans)
 	if err != nil {
 		return nil, err
 	}
