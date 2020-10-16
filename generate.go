@@ -1,10 +1,14 @@
 package main
 
-import "github.com/rubenvp8510/jaeger-storage-perf/helpers"
+import (
+	"fmt"
+	"github.com/rubenvp8510/jaeger-storage-perf/fixtures"
+)
 
 func main()  {
-	err := helpers.GenerateFixtures("traces_fixtures")
+	nSpans, err := fixtures.SaveSpans("data/traces",10000, 10, 100)
 	if err != nil {
 		panic(err)
 	}
+	fmt.Printf("Spans writen %d\n", nSpans)
 }

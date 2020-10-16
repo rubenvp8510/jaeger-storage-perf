@@ -3,11 +3,8 @@ package perftest
 import (
 	"context"
 	"github.com/jaegertracing/jaeger/model"
-	"github.com/jaegertracing/jaeger/storage"
 	"github.com/jaegertracing/jaeger/storage/spanstore"
 )
-
-type SetupFunction func() storage.Factory
 
 func verifyWrites(spans []*model.Span, count int, reader spanstore.Reader) int {
 	verified := 0
