@@ -6,7 +6,7 @@ import (
 )
 
 func main()  {
-	nSpans, err := fixtures.SaveSpans("data/traces",10000, 10, 100)
+	nSpans, err := fixtures.SaveSpans("data/traces",3500, 100, 100)
 	if err != nil {
 		panic(err)
 	}

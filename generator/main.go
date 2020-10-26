@@ -12,7 +12,7 @@ type TraceGenerator struct {
 	MaxProcess     int
 	MinProcessTags int
 	MaxDuration    time.Duration
-	MinDuration	   time.Duration
+	MinDuration    time.Duration
 
 	processes []Process
 	tags      []*TagTemplate
@@ -21,21 +21,20 @@ type TraceGenerator struct {
 
 func NewSpanGenerator() *TraceGenerator {
 	return &TraceGenerator{
-		MaxProcess: 10,
-		MaxTags:    100,
-		MinTags:    2,
-		MaxDuration: time.Duration(10*time.Second),
-		MinDuration: time.Duration(1*time.Second),
+		MaxProcess:  10,
+		MaxTags:     100,
+		MinTags:     2,
+		MaxDuration: time.Duration(10 * time.Second),
+		MinDuration: time.Duration(1 * time.Second),
 	}
 }
-
 
 func (g *TraceGenerator) Init() {
 	rand.Seed(time.Now().Unix())
 	words := generateWords(20000)
-	g.tags = generateTagTemplates(g.MaxTags,words)
+	g.tags = generateTagTemplates(g.MaxTags, words)
 	g.processes = generateProcesses(g.MaxProcess+1, g.MinProcessTags, g.tags)
-	ops := generateWords(g.MaxProcess+1)
+	ops := generateWords(g.MaxProcess + 1)
 	g.ops = ops
 
 }
@@ -108,9 +107,9 @@ func (g *TraceGenerator) setRelations(traceID model.TraceID, spans []*model.Span
 }
 
 func (g *TraceGenerator) Generate(minSpans, maxSpans int) []*model.Span {
-	numSpans := rand.Intn(maxSpans-minSpans) + minSpans
+	numSpans := generateRandomNumber(minSpans, maxSpans)
 	traceID := generateTraceID()
-	duration := rand.Int63n(int64(g.MaxDuration.Seconds() - g.MinDuration.Seconds())) + int64(g.MinDuration.Seconds())
+	duration := generateRandomNumberInt64(int(g.MinDuration.Seconds()), int(g.MaxDuration.Seconds()))
 	timestamp := time.Now().Unix() - rand.Int63n(1000)
 	var spans []*model.Span
 	for i := 0; i < numSpans; i++ {
